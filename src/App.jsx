@@ -1,4 +1,4 @@
-import { HashRouter } from "react-router-dom";
+import { HashRouter, Routes, Route } from 'react-router-dom'; // Importamos HashRouter y otros elementos
 import React, { useState } from 'react';
 import './App.css';
 
@@ -20,17 +20,17 @@ const Square = ({ children, isSelected, updateBoard, index }) => {
 };
 
 const winnerCombos = [
-  [0, 1, 2], 
-  [3, 4, 5], 
-  [6, 7, 8], 
-  [0, 3, 6], 
-  [1, 4, 7], 
-  [2, 5, 8], 
-  [0, 4, 8], 
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
   [2, 4, 6],
 ];
 
-function App() {
+const Game = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [turn, setTurn] = useState(turns.O);
   const [winner, setWinner] = useState(null);
@@ -69,47 +69,43 @@ function App() {
   };
 
   return (
-    <HashRouter>
-      <main className='board'>
-        <h1>3 en raya</h1>
-        <section className='game'>
-          {
-            board.map((_, index) => (
-              <Square 
-                key={index} 
-                index={index} 
-                updateBoard={updateBoard}
-              >
-                {board[index]}
-              </Square>
-            ))
-          }
-        </section>
-        <section className='turn'> 
-          <Square isSelected={turn === turns.X}>{turns.X}</Square>
-          <Square isSelected={turn === turns.O}>{turns.O}</Square>
-        </section>
+    <main className="board">
+      <h1>3 en raya</h1>
+      <section className="game">
+        {board.map((_, index) => {
+          return (
+            <Square key={index} index={index} updateBoard={updateBoard}>
+              {board[index]}
+            </Square>
+          );
+        })}
+      </section>
+      <section className="turn">
+        <Square isSelected={turn === turns.X}>{turns.X}</Square>
+        <Square isSelected={turn === turns.O}>{turns.O}</Square>
+      </section>
 
-        {winner != null && (
-          <section className='winner'>
-            <div className="text">
-              <h2>
-                {winner === false
-                  ? 'Empate'
-                  : `El ganador es `}
-              </h2>
-              <header className='win'>
-                {winner && <Square>{winner}</Square>}
-              </header>
-              <footer>
-                <button onClick={resetGame}>
-                  Again
-                </button>
-              </footer>
-            </div>
-          </section>
-        )}
-      </main>
+      {winner != null && (
+        <section className="winner">
+          <div className="text">
+            <h2>{winner === false ? 'Empate' : `El ganador es `}</h2>
+            <header className="win">{winner && <Square>{winner}</Square>}</header>
+            <footer>
+              <button onClick={resetGame}>Again</button>
+            </footer>
+          </div>
+        </section>
+      )}
+    </main>
+  );
+};
+
+function App() {
+  return (
+    <HashRouter> 
+      <Routes>
+        <Route path="/" element={<Game />} />  
+      </Routes>
     </HashRouter>
   );
 }
