@@ -1,7 +1,8 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'; // Importamos HashRouter y otros elementos
 import React, { useState } from 'react';
-import './App.css';
+import confetti from 'canvas-confetti';
 
+import './App.css';
 const turns = {
   X: 'X',
   O: 'O',
@@ -48,7 +49,10 @@ const Game = () => {
 
     const newWinner = checkWinner(newBoard);
     if (newWinner) {
+      confetti();
       setWinner(newWinner);
+    } else if (checkEndWinner(newBoard)) {
+      setWinner(false);
     }
   };
 
@@ -68,14 +72,18 @@ const Game = () => {
     setWinner(null);
   };
 
+  const checkEndWinner = (newBoard) => {
+    return newBoard.every((Square) => Square !== null);
+  }
+
   return (
     <main className="board">
       <h1>3 en raya</h1>
       <section className="game">
-        {board.map((_, index) => {
+        {board.map((square, index) => {
           return (
             <Square key={index} index={index} updateBoard={updateBoard}>
-              {board[index]}
+              {square}
             </Square>
           );
         })}
@@ -88,7 +96,7 @@ const Game = () => {
       {winner != null && (
         <section className="winner">
           <div className="text">
-            <h2>{winner === false ? 'Empate' : `El ganador es `}</h2>
+            <h2>{winner === false ? 'Empate' : 'El ganador es'}</h2>
             <header className="win">{winner && <Square>{winner}</Square>}</header>
             <footer>
               <button onClick={resetGame}>Again</button>
@@ -96,6 +104,8 @@ const Game = () => {
           </div>
         </section>
       )}
+
+      <button onClick={resetGame}> Reset </button>
     </main>
   );
 };
